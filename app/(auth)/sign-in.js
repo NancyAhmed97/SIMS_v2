@@ -7,6 +7,20 @@ import axios from 'axios';
 import { base_url } from '../../constants/constants';
 import { useDispatch } from 'react-redux';
 import { setuserInfo } from '../../hooks/authorizationReducer';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+const getStoredPushToken = async () => {
+    try {
+      const FCMToken = await AsyncStorage.getItem('FCMToken');
+      console.log("Token AsyncStorage",FCMToken)
+      if (FCMToken !== null) {
+        return FCMToken;
+      }
+    } catch (e) {
+      console.error('Failed to retrieve push token', e);
+    }
+    return null;
+  };
 
 const signIn = () => {
     const nativation = useNavigation();
@@ -25,19 +39,22 @@ const signIn = () => {
             axios
                 .post(`${base_url}/api/signin`, user)
                 .then((response) => {
+                    console.log(response)
                     if(response.data.intent==='user'){
                                             dispatch(setuserInfo(response.data))
+                                            
                     nativation.navigate('(tabs)')
 
                     }else{
                                             dispatch(setuserInfo(response.data))
+                                            
                     nativation.navigate('(blogerTabs)')
 
                     }
                     
                     // dispatch(setuserInfo(response.data))
                     // nativation.navigate('(tabs)')
-
+                    sendTokentoBackEnd(response.data)
 
                 })
                 .catch((error) => {
@@ -47,6 +64,31 @@ const signIn = () => {
 
 
     }
+/////
+
+const sendTokentoBackEnd = async (loggedUser) => {
+   const data = {
+    token: await AsyncStorage.getItem("FCMToken")
+   }
+//    console.log(data.token)
+        axios
+            .post(`${base_url}/notifications/register`, data,{
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${loggedUser.token}`,
+                },
+              })
+            .then((response) => {
+               console.log("Succsess",response,"DDDSsss")
+            })
+            .catch((error) => {
+                console.log("Error",error.response.data)
+                Alert.alert(error.response.data.errorMessage)
+            })
+    
+
+
+}
 
     return (
         <ImageBackground

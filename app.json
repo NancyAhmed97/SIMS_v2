@@ -13,14 +13,17 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.nancy977.SIMs"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.nancy977.SIMs"
+      "package": "com.nancy977.SIMs",
+      "googleServicesFile": "./google-services.json",
+      "useCleartextTraffic": true
     },
     "web": {
       "bundler": "metro",
@@ -38,8 +41,9 @@
         "origin": false
       },
       "eas": {
-        "projectId": "6d9a8883-f576-427d-9d15-79bd9ca8f8bf"
+        "projectId": "59b0d622-bb87-4d63-87dc-038ae77ad414"
       }
-    }
+    },
+    "owner": "sims-v2"
   }
 }
